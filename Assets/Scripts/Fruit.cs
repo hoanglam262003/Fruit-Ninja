@@ -4,14 +4,17 @@ public class Fruit : MonoBehaviour
 {
     public GameObject whole;
     public GameObject sliced;
+    public int pointValue = 1;
 
     private Rigidbody rb;
     private Collider col;
+    private ParticleSystem juice;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         col = GetComponent<Collider>();
+        juice = GetComponentInChildren<ParticleSystem>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -25,9 +28,11 @@ public class Fruit : MonoBehaviour
 
     private void Slice(Vector3 direction, Vector3 position, float force)
     {
+        FindAnyObjectByType<GameManager>().IncreaseScore(pointValue);
         whole.SetActive(false);
         sliced.SetActive(true);
         col.enabled = false;
+        juice.Play();
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         sliced.transform.rotation = Quaternion.Euler(0f, 0f, angle);
         Rigidbody[] slices = sliced.GetComponentsInChildren<Rigidbody>();
